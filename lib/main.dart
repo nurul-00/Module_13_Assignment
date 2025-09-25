@@ -10,10 +10,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Assignment 13',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const HomePage(),
       debugShowCheckedModeBanner: false,
+      title: 'Course Grid',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        useMaterial3: true,
+      ),
+      home: const HomePage(),
     );
   }
 }
@@ -21,47 +24,76 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  final List<Map<String, dynamic>> courses = const [
+    {
+      "title": "Full Stack Web Development with Javascript (MERN)",
+      "image": "assets/images/mern.png",
+      "batch": "ব্যাচ ১১",
+      "seatsLeft": "২ সিট বাকি",
+      "daysLeft": "৫ দিন বাকি",
+    },
+    {
+      "title": "Full Stack Web Development with Python, Django & React",
+      "image": "assets/images/python.png",
+      "batch": "ব্যাচ ১৩",
+      "seatsLeft": "৮ সিট বাকি",
+      "daysLeft": "১০ দিন বাকি",
+    },
+    {
+      "title": "Web Development with ASP.Net Core",
+      "image": "assets/images/asp.png",
+      "batch": "ব্যাচ ৭",
+      "seatsLeft": "২১ সিট বাকি",
+      "daysLeft": "১০ দিন বাকি",
+    },
+    {
+      "title": "SQA: Manual & Automated Testing",
+      "image": "assets/images/sqa.png",
+      "batch": "ব্যাচ ২৩",
+      "seatsLeft": "১৬ সিট বাকি",
+      "daysLeft": "২০ দিন বাকি",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("মডিউল ১৩ এসাইনমেন্ট"),
         centerTitle: true,
+        title: const Text("মডিউল এসাইনমেন্ট"),
+        backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          children: const [
-            CourseCard(
-              title: "Full Stack Web Development with JavaScript (MERN)",
-              batch: "ব্যাচ ১৯",
-              hours: "৫৪ ঘন্টা ক্লাস",
-              days: "৩০ দিন বাকি",
-              imagePath: "assets/images/mern.png",
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "মডিউল ১৩ এর এসাইনমেন্ট",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
-            CourseCard(
-              title: "Full Stack Web Development with Python, Django & React",
-              batch: "ব্যাচ ৩৬",
-              hours: "৬৮ ঘন্টা ক্লাস",
-              days: "৪০ দিন বাকি",
-              imagePath: "assets/images/python.png",
-            ),
-            CourseCard(
-              title: "Full Stack Web Development with ASP.Net Core",
-              batch: "ব্যাচ ২০",
-              hours: "৫৫ ঘন্টা ক্লাস",
-              days: "৩৫ দিন বাকি",
-              imagePath: "assets/images/asp.png",
-            ),
-            CourseCard(
-              title: "SQA: Manual & Automated Testing",
-              batch: "ব্যাচ ১৩",
-              hours: "৬৫ ঘন্টা ক্লাস",
-              days: "৪৫ দিন বাকি",
-              imagePath: "assets/images/sqa.png",
+            const SizedBox(height: 20),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.65,
+                ),
+                itemCount: courses.length,
+                itemBuilder: (context, index) {
+                  final course = courses[index];
+                  return CourseCard(
+                    title: course["title"]!,
+                    image: course["image"]!,
+                    seatLeft: course["seatsLeft"]!,
+                    daysLeft: course["daysLeft"]!,
+                    batch: course["batch"]!,
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -71,68 +103,181 @@ class HomePage extends StatelessWidget {
 }
 
 class CourseCard extends StatelessWidget {
-  final String title;
-  final String batch;
-  final String hours;
-  final String days;
-  final String imagePath;
+  final String title, image, batch, seatLeft, daysLeft;
 
   const CourseCard({
     super.key,
     required this.title,
+    required this.image,
     required this.batch,
-    required this.hours,
-    required this.days,
-    required this.imagePath,
+    required this.seatLeft,
+    required this.daysLeft,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      clipBehavior: Clip.hardEdge,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+        children: <Widget>[
+          Expanded(
+            flex: 3,
             child: Image.asset(
-              imagePath,
-              height: 100,
-              width: double.infinity,
+              image,
               fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              errorBuilder: (context, error, stackTrace) =>
+              const Center(child: Text('Image not found')),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(batch, style: const TextStyle(fontSize: 12)),
-                    Text(hours, style: const TextStyle(fontSize: 12)),
-                    Text(days, style: const TextStyle(fontSize: 12)),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed: () {},
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text("বিস্তারিত দেখুন"),
-                      Icon(Icons.arrow_forward, size: 16),
-                    ],
+          const SizedBox(height: 8),
+
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Row(
+                children: [
+                  _InfoTag(
+                    child: Text(
+                      batch,
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 11,
+                      ),
+                    ),
                   ),
-                )
-              ],
+                  const SizedBox(width: 5),
+                  _InfoTag(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.event_seat,
+                          size: 11,
+                          color: Colors.black87,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          seatLeft,
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  _InfoTag(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.history,
+                          size: 11,
+                          color: Colors.black87,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          daysLeft,
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: Divider(),
+          ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        backgroundColor: Colors.grey.shade300,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "বিস্তারিত দেখি",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          const Icon(
+                            Icons.arrow_right_alt,
+                            size: 18,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _InfoTag extends StatelessWidget {
+  final Widget child;
+
+  const _InfoTag({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 25,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade300,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: child,
+        ),
       ),
     );
   }
